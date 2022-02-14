@@ -6,7 +6,7 @@
 /*   By: dridolfo <dridolfo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/13 17:39:12 by dridolfo          #+#    #+#             */
-/*   Updated: 2022/02/14 17:49:14 by dridolfo         ###   ########.fr       */
+/*   Updated: 2022/02/14 22:12:44 by dridolfo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ void	ft_handler(int sig)
 {
 	static unsigned char	c = 0;
 	static int				i = 0;
-	int						j;
 
 	c |= (sig == SIGUSR1);
 	if (++i == 8)
@@ -29,12 +28,19 @@ void	ft_handler(int sig)
 		c <<= 1;
 }
 
+static void	ft_display(pid_t pid)
+{
+	write(1, "PID: ", 5);
+	write(1, &pid, 1);
+	write(1, "\n", 1);
+}
+
 int	main(void)
 {
 	pid_t	pid;
 
 	pid = getpid();
-	printf("PID: %d\n", pid);
+	ft_display(pid);
 	signal(SIGUSR2, ft_handler);
 	signal(SIGUSR1, ft_handler);
 	while (1)

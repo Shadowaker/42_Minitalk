@@ -1,11 +1,15 @@
 NAME1 = ./server
 NAME2 = ./client
 
-SRC = ./server.c \
-./client.c
+SRC1 = ./server.c \
 ./utility.c
 
-OBJS = $(SRC:.c=.o)
+SRC2 = ./client.c \
+./utility.c
+
+OBJ1 = $(SRC1:.c=.o)
+
+OBJ2 = $(SRC2:.c=.o)
 
 HDRS = ./lib.h
 
@@ -15,17 +19,19 @@ CC = gcc -Wall -Wextra -Werror
 
 .c.o = ${CC} -I ${HDRS} -c $< -o ${<:.c=.o}
 
-$(NAME): ${OBJS}
-	ar rc $(NAME) $(OBJS)
-	ranlib $(NAME)
+all: $(NAME1) $(NAME2) clean
 
-all: $(NAME)
+$(NAME1): ${OBJ1}
+
+$(NAME2): $(OBJ2)
 
 clean:
-	${RM} $(OBJS)
+	${RM} $(OBJ1)
+	$(RM) $(OBJ2)
 
 fclean: clean
-	${RM} $(NAME)
+	${RM} $(NAME1)
+	$(RM) $(NAME2)
 
 re: fclean all
 
