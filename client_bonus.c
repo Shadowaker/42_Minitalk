@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client.c                                           :+:      :+:    :+:   */
+/*   client_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dridolfo <dridolfo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/13 17:39:14 by dridolfo          #+#    #+#             */
-/*   Updated: 2022/02/15 19:32:50 by dridolfo         ###   ########.fr       */
+/*   Updated: 2022/02/15 19:37:40 by dridolfo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,27 @@ static void	ft_head(pid_t pid, char *s)
 		ft_talker(pid, s[i]);
 		usleep(100);
 		i++;
+		if (s[i] == '\0')
+		{
+			ft_talker(pid, s[i]);
+			usleep(100);
+		}
+	}
+}
+
+static void	ft_handler(int sig)
+{
+	static int	i = 0;
+
+	if (sig == SIGUSR1)
+	{
+		write(1, "OK!\n", 4);
+		i++;
+	}
+	else
+	{
+		write(1, "Server says all OK\n", ft_strlen("Server says all OK\n"));
+		exit(0);
 	}
 }
 
@@ -50,7 +71,15 @@ int	main(int argc, char **argv)
 			ft_strlen("\33[91mError: Not enough arguments.\033[0m\n"));
 		return (0);
 	}
+	if (ft_strlen(argv[2]) == 0)
+		return (0);
 	pid = ft_atoi(argv[1]);
+	signal(SIGUSR2, ft_handler);
+	signal(SIGUSR1, ft_handler);
 	ft_head(pid, argv[2]);
+	while (1)
+	{
+		pause();
+	}
 	return (0);
 }
